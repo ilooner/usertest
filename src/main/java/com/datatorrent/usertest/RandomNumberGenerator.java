@@ -7,6 +7,9 @@ import com.datatorrent.api.Context.OperatorContext;
 import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.InputOperator;
 import com.datatorrent.common.util.BaseOperator;
+import java.io.IOException;
+import java.util.logging.Level;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +21,11 @@ public class RandomNumberGenerator extends BaseOperator implements InputOperator
   @Override
   public void setup(OperatorContext context)
   {
-    LOG.info("User {}", System.getProperty("user.name"));
+    try {
+      LOG.info("User {}", UserGroupInformation.getCurrentUser().getUserName());
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
   @Override
